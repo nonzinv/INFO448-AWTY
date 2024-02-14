@@ -1,11 +1,13 @@
 # INFO448-AWTY
 
-## Are We There Yet? (Part 1)
+__Are We There Yet? (Part 1)__:
+
 Remember when you were a kid on a long car ride, and you kept asking your parents "Are we there yet?" and annoying the heck out of them? We want an application that does exactly that.
 
 In this part, we will just pop Toast asking the question; in a future part, we will wire it up against SMS so that you can annoy the heck out of somebody else over text messages.
 
-## Stories:
+__Stories:__
+
 As a user, when I start the application, it should present me with an activity containing an EditText for the message I want to send, an EditText for the phone number to which to send it (which we will not do anything with for this part), an EditText for how many minutes between each nag (no zeros, no negatives, must be an integer), and a Button labeled "Start".
 
 As a user, when I am using the application's UI, "Start" should do nothing until all controls are filled out with legitimate values.
