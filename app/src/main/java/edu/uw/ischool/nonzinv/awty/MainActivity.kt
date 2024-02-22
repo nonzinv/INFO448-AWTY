@@ -9,15 +9,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.telephony.PhoneNumberUtils
+import android.telephony.SmsManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 
 const val ALARM_ACTION = "edu.uw.ischool.newart.ALARM"
+
 class MainActivity : AppCompatActivity() {
 
     lateinit var message: EditText
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var beginBtn: Button
     private var receiver: BroadcastReceiver? = null
     private var isRunning: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -71,12 +73,15 @@ class MainActivity : AppCompatActivity() {
         val msg = message.text.toString()
         val phone = number.text.toString()
         val minuteCount = minutes.text.toString().toLong() * 1000 * 60
+        Log.d("SMS", "SENDING TO $phone")
+        sendSMS(phone, msg)
         if(receiver == null) {
             receiver = object: BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
                     val numberFormat = "(${phone.substring(0, 3)}) ${phone.substring(3, 6)}-${phone.substring(6, 10)}"
-                    val toastMsg = "$numberFormat: $msg"
-                    Toast.makeText(context, toastMsg, Toast.LENGTH_LONG).show()
+                    val smsMsg = "$numberFormat: $msg"
+                    Log.d("SMS", "Sending to $numberFormat")
+                    sendSMS(phone, smsMsg)
                 }
             }
             val filter = IntentFilter(ALARM_ACTION)
@@ -119,5 +124,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun validNumber(input: String): Boolean {
         return PhoneNumberUtils.isGlobalPhoneNumber(input)
+    }
+
+    private fun sendSMS(phoneNumber: String, message: String) {
+        try {
+            val smsManager = SmsManager.getDefault()
+            smsManager.sendTextMessage(phoneNumber, null, message, null, null)
+            Log.d("SMS", "SMS sent: $message")
+        } catch (e: Exception) {
+            Log.e("SMS", "Failed to send SMS: ${e.message}")
+        }
     }
 }
